@@ -1,0 +1,70 @@
+{
+  "apiVersion": 1,
+  "id": "eidos.journals",
+  "name": "Journals",
+  "version": "0.3.3",
+  "requires": {
+    "pluginApi": "1.5.0"
+  },
+  "icon": {
+    "paths": [
+      "M8 2v4",
+      "M16 2v4",
+      "M3 10h18",
+      "M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z",
+      "m9 16 2 2 4-4"
+    ]
+  },
+  "extension": "./src/extension.ts",
+  "workspace": {
+    "listMarkdownFiles": true,
+    "countMarkdownLines": true,
+    "watchMarkdownFiles": true
+  },
+  "views": [
+    {
+      "id": "overview",
+      "title": "Journals",
+      "entry": "./src/page.ts",
+      "context": "page"
+    }
+  ],
+  "settings": {
+    "folder": {
+      "type": "string",
+      "title": "Journals folder",
+      "description": "Space-relative folder. Leave empty to save at the Space root.",
+      "default": "journals"
+    },
+    "organization": {
+      "type": "string",
+      "title": "File organization",
+      "description": "The path shown is relative to the Journals folder.",
+      "enum": ["YYYY-MM-DD.md", "YYYY/YYYY-MM-DD.md", "YYYY/MM/YYYY-MM-DD.md"],
+      "default": "YYYY/MM/YYYY-MM-DD.md"
+    }
+  },
+  "actions": [
+    {
+      "id": "today",
+      "title": "Open today's journal",
+      "context": "workspace",
+      "access": "write"
+    },
+    {
+      "id": "overview",
+      "title": "Open Journals overview",
+      "context": "workspace"
+    }
+  ],
+  "placements": [
+    {
+      "location": "command-palette",
+      "action": "today"
+    },
+    {
+      "location": "command-palette",
+      "action": "overview"
+    }
+  ]
+}

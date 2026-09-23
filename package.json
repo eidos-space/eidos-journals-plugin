@@ -1,0 +1,17 @@
+{
+  "name": "@eidos.space/plugin-journals",
+  "version": "0.3.3",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/plugin-tools.mjs check .",
+    "pack:plugin": "node scripts/plugin-tools.mjs pack .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@eidos.space/plugin-sdk": "^0.2.0",
+    "@eidos.space/plugin-tools": "^0.2.0",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.11"
+  }
+}
