@@ -139,7 +139,7 @@ const mount: Mount = (ctx, root) => {
       if (typeof folder !== "string") throw new Error("Invalid Journals folder")
       const normalizedFolder = folder.trim().replace(/\/$/, "")
       if (watchFolder !== normalizedFolder) {
-        const next = await ctx.ui.observeMarkdownFiles(
+        const next = await ctx.fs.watch(
           normalizedFolder,
           scheduleLoad
         )
@@ -151,12 +151,15 @@ const mount: Mount = (ctx, root) => {
         watchSubscription = next
         watchFolder = normalizedFolder
       }
-      const result = await ctx.ui.listMarkdownFiles(normalizedFolder)
+      const files = await ctx.fs.list(normalizedFolder, {
+        extensions: [".md"],
+      })
       if (disposed || ctx.signal.aborted) return
+      const paths = files.map((f) => f.path)
       const today = new Date()
-      const stats = summarizeJournals(result.paths, today)
+      const stats = summarizeJournals(paths, today)
       const datePaths = new Map<string, string>()
-      for (const path of result.paths) {
+      for (const path of paths) {
         const date = journalDateFromPath(path)
         if (date && !datePaths.has(date)) datePaths.set(date, path)
       }
@@ -186,15 +189,30 @@ const mount: Mount = (ctx, root) => {
           return index >= yearStart && index <= through
         })
         .map(([, path]) => path)
-      const lineCounts = new Map(
-        (await ctx.ui.countMarkdownLines(pathsToCount)).map(
-          ({ path, lines }) => [path, lines]
-        )
+      const lineCounts = new Map<string, number | null>()
+      let countCursor = 0
+      await Promise.all(
+        Array.from({ length: Math.min(8, pathsToCount.length) }, async () => {
+          while (countCursor < pathsToCount.length) {
+            const path = pathsToCount[countCursor++]!
+            try {
+              const text = await ctx.fs.readText(path)
+              lineCounts.set(
+                path,
+                text
+                  .split(/\r\n|\r|\n/)
+                  .filter((line) => line.trim().length > 0).length
+              )
+            } catch {
+              lineCounts.set(path, null)
+            }
+          }
+        })
       )
       if (disposed || ctx.signal.aborted) return
 
       content.replaceChildren()
-      if (result.truncated)
+      if (files.length >= 20_000)
         content.append(element("p", "jn-warning", t.truncated))
       const metrics = element("section", "jn-metrics")
       for (const [label, number, suffix] of [
@@ -297,7 +315,7 @@ const mount: Mount = (ctx, root) => {
           if (hasEntry) {
             cell.addEventListener("click", () => {
               const path = datePaths.get(key)
-              if (path) void ctx.ui.openMarkdownFile(path).catch(showError)
+              if (path) void ctx.ui.openFile(path).catch(showError)
             })
           }
           column.append(cell)
@@ -335,7 +353,7 @@ const mount: Mount = (ctx, root) => {
           element("span", "jn-recent-arrow", "↗")
         )
         item.addEventListener("click", () => {
-          void ctx.ui.openMarkdownFile(path).catch(showError)
+          void ctx.ui.openFile(path).catch(showError)
         })
         list.append(item)
       }

@@ -2,9 +2,9 @@
   "apiVersion": 1,
   "id": "eidos.journals",
   "name": "Journals",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "requires": {
-    "pluginApi": "1.5.0"
+    "pluginApi": "2.0.0"
   },
   "icon": {
     "paths": [
@@ -17,9 +17,7 @@
   },
   "extension": "./src/extension.ts",
   "workspace": {
-    "listMarkdownFiles": true,
-    "countMarkdownLines": true,
-    "watchMarkdownFiles": true
+    "files": true
   },
   "views": [
     {

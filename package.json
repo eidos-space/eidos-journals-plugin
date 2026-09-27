@@ -1,6 +1,6 @@
 {
   "name": "@eidos.space/plugin-journals",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,8 +9,8 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@eidos.space/plugin-sdk": "^0.2.0",
-    "@eidos.space/plugin-tools": "^0.2.0",
+    "@eidos.space/plugin-sdk": "0.4.0",
+    "@eidos.space/plugin-tools": "0.4.0",
     "typescript": "^5.8.3",
     "vitest": "^4.1.11"
   }
