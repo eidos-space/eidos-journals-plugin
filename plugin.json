@@ -2,9 +2,9 @@
   "apiVersion": 1,
   "id": "eidos.journals",
   "name": "Journals",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "requires": {
-    "pluginApi": "2.0.0"
+    "pluginApi": "3.0.0"
   },
   "icon": {
     "paths": [
@@ -24,7 +24,7 @@
       "id": "overview",
       "title": "Journals",
       "entry": "./src/page.ts",
-      "context": "page"
+      "kind": "page"
     }
   ],
   "settings": {
@@ -38,7 +38,11 @@
       "type": "string",
       "title": "File organization",
       "description": "The path shown is relative to the Journals folder.",
-      "enum": ["YYYY-MM-DD.md", "YYYY/YYYY-MM-DD.md", "YYYY/MM/YYYY-MM-DD.md"],
+      "enum": [
+        "YYYY-MM-DD.md",
+        "YYYY/YYYY-MM-DD.md",
+        "YYYY/MM/YYYY-MM-DD.md"
+      ],
       "default": "YYYY/MM/YYYY-MM-DD.md"
     }
   },

@@ -81,6 +81,12 @@ function element<K extends keyof HTMLElementTagNameMap>(
 }
 
 const mount: Mount = (ctx, root) => {
+  const capabilities = ctx.capabilities
+  if (!capabilities.fs || !capabilities.settings || !capabilities.ui.openFile) throw new Error("Journals requires filesystem, settings and file navigation")
+  const fs = capabilities.fs
+  const settings = capabilities.settings
+  const openFile = capabilities.ui.openFile
+
   if (ctx.binding.kind !== "page") throw new Error("Open the Journals page")
   const language = navigator.language.toLowerCase().startsWith("zh")
     ? "zh"
@@ -135,11 +141,11 @@ const mount: Mount = (ctx, root) => {
     refresh.disabled = true
     if (yearSelector) yearSelector.disabled = true
     try {
-      const folder = await ctx.settings.get("folder")
+      const folder = await settings.get("folder")
       if (typeof folder !== "string") throw new Error("Invalid Journals folder")
       const normalizedFolder = folder.trim().replace(/\/$/, "")
       if (watchFolder !== normalizedFolder) {
-        const next = await ctx.fs.watch(
+        const next = await fs.watch(
           normalizedFolder,
           scheduleLoad
         )
@@ -151,7 +157,7 @@ const mount: Mount = (ctx, root) => {
         watchSubscription = next
         watchFolder = normalizedFolder
       }
-      const files = await ctx.fs.list(normalizedFolder, {
+      const files = await fs.list(normalizedFolder, {
         extensions: [".md"],
       })
       if (disposed || ctx.signal.aborted) return
@@ -196,7 +202,7 @@ const mount: Mount = (ctx, root) => {
           while (countCursor < pathsToCount.length) {
             const path = pathsToCount[countCursor++]!
             try {
-              const text = await ctx.fs.readText(path)
+              const text = await fs.readText(path)
               lineCounts.set(
                 path,
                 text
@@ -315,7 +321,7 @@ const mount: Mount = (ctx, root) => {
           if (hasEntry) {
             cell.addEventListener("click", () => {
               const path = datePaths.get(key)
-              if (path) void ctx.ui.openFile(path).catch(showError)
+              if (path) void openFile(path).catch(showError)
             })
           }
           column.append(cell)
@@ -353,7 +359,7 @@ const mount: Mount = (ctx, root) => {
           element("span", "jn-recent-arrow", "↗")
         )
         item.addEventListener("click", () => {
-          void ctx.ui.openFile(path).catch(showError)
+          void openFile(path).catch(showError)
         })
         list.append(item)
       }

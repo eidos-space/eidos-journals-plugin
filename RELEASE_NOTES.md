@@ -1,5 +1,5 @@
-# Journals 0.4.0
+# Journals 0.5.0
 
-Journals now supports Eidos Lite 0.19.0 and plugin API 2.0. Its overview reads and watches Markdown files through the permission-scoped filesystem API, and the Today action opens or creates the current journal through the same host interface. Existing journal files remain in your Space.
+Requires Eidos Lite 0.20.0 or later and Plugin API 3. Update Lite before installing this package.
 
-Install this version with Eidos Lite 0.19.0 or later and review its Space file permission when prompted. CLI Serve does not support Journals.
+The overview and Today action use filesystem, settings, and navigation capabilities. Existing journal files, folder settings, and file organization are preserved. CLI Serve is not supported.
