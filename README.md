@@ -1,8 +1,10 @@
 # Journals
 
-Journals 0.5.0 requires Eidos Lite 0.20.0 or later and plugin API 3.0.0. CLI Serve is not supported.
+Journals 0.5.1 requires Eidos Lite 0.20.0 or later and plugin API 3.0.0. CLI Serve is not supported.
 
-Download `eidos.journals-0.5.0.eidos-plugin` from [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases), then use **Plugins → Install plugin…** in a compatible Lite build and enable Journals in your Space. The release includes a SHA-256 checksum for the package.
+Download `eidos.journals-0.5.1.eidos-plugin` from [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases), then use **Plugins → Install plugin…** in a compatible Lite build and enable Journals in your Space. The release includes a SHA-256 checksum for the package.
+
+Once enabled, **Journals** appears in the host navigation and opens the overview directly. Android builds with plugin Page navigation support show it in the bottom navigation (or **More** when the bar is full). Update the Android app to a build with this support before using that entry. The command-palette actions remain available.
 
 Open today's Markdown journal from Eidos Lite's command palette. If the file does not exist, Journals creates the configured folders and an empty file; if it exists, Journals opens it without changing its contents.
 

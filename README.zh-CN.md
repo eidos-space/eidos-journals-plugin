@@ -1,8 +1,10 @@
 # Journals
 
-Journals 0.5.0 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0。不支持 CLI Serve。
+Journals 0.5.1 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0。不支持 CLI Serve。
 
-从 [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases) 下载 `eidos.journals-0.5.0.eidos-plugin`，然后在兼容的 Lite 构建中通过“插件 → 安装插件…”安装，并在 Space 中启用。发布附件包含安装包的 SHA-256 校验值。
+从 [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases) 下载 `eidos.journals-0.5.1.eidos-plugin`，然后在兼容的 Lite 构建中通过“插件 → 安装插件…”安装，并在 Space 中启用。发布附件包含安装包的 SHA-256 校验值。
+
+启用后，宿主导航中的 **Journals** 入口会直接打开总览。在支持插件 Page 导航的 Android 构建中，入口位于底部导航，位置不足时收进“更多”。请先更新到支持此能力的 Android 应用。原有命令入口仍可使用。
 
 通过 Eidos Lite 的命令面板执行“Open today's journal”，打开当天的 Markdown 日记。文件不存在时会创建目录和空文件；已存在时直接打开，不会覆盖内容。
 
