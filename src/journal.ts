@@ -1,3 +1,25 @@
+import type { CommonCapabilities } from "@eidos.space/plugin-sdk"
+
+export async function openTodayJournal(
+  { fs, settings, ui }: CommonCapabilities,
+  signal: AbortSignal,
+  date = new Date()
+): Promise<void> {
+  if (!fs || !settings || !ui.openFile) throw new Error("File access unavailable")
+  const folder = await settings.get("folder")
+  const organization = await settings.get("organization")
+  if (typeof folder !== "string" || typeof organization !== "string")
+    throw new Error("Invalid Journals settings")
+  const path = journalPath(date, folder, organization as Organization)
+  signal.throwIfAborted()
+  const existing = await fs.stat(path)
+  signal.throwIfAborted()
+  if (existing?.isDirectory) throw new Error("The journal path is a folder")
+  if (!existing) await fs.writeText(path, "")
+  signal.throwIfAborted()
+  await ui.openFile(path)
+}
+
 export type Organization =
   | "YYYY-MM-DD.md"
   | "YYYY/YYYY-MM-DD.md"

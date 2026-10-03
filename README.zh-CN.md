@@ -1,12 +1,12 @@
 # Journals
 
-Journals 0.5.1 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0。不支持 CLI Serve。
+Journals 0.5.2 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0。不支持 CLI Serve。
 
-从 [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases) 下载 `eidos.journals-0.5.1.eidos-plugin`，然后在兼容的 Lite 构建中通过“插件 → 安装插件…”安装，并在 Space 中启用。发布附件包含安装包的 SHA-256 校验值。
+从 [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases) 下载 `eidos.journals-0.5.2.eidos-plugin`，然后在兼容的 Lite 构建中通过“插件 → 安装插件…”安装，并在 Space 中启用。发布附件包含安装包的 SHA-256 校验值。
 
 启用后，宿主导航中的 **Journals** 入口会直接打开总览。在支持插件 Page 导航的 Android 构建中，入口位于底部导航，位置不足时收进“更多”。请先更新到支持此能力的 Android 应用。原有命令入口仍可使用。
 
-通过 Eidos Lite 的命令面板执行“Open today's journal”，打开当天的 Markdown 日记。文件不存在时会创建目录和空文件；已存在时直接打开，不会覆盖内容。
+点击总览顶部的「今日日志」，或通过 Eidos Lite 的命令面板执行“Open today's journal”，打开当天的 Markdown 日记。文件不存在时会创建目录和空文件；已存在时直接打开，不会覆盖内容。
 
 在“插件 → Journals → Settings”中配置目标文件夹和文件组织方式。默认路径为 `journals/YYYY/MM/YYYY-MM-DD.md`；也可以选择按年分组或将所有日记放在同一目录。文件夹留空时写入当前 Space 根目录。日期以设备本地时间为准。
 
@@ -15,3 +15,5 @@ Journals 0.5.1 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0
 插件不需要账号或网络权限。安装时需要授予 Space 文件访问权限，用于读取日志、监听文件变化以及创建当天的日志。
 
 从源码构建时，先运行 `pnpm install`，再运行 `pnpm check`、`pnpm test` 和 `pnpm pack:plugin`。项目使用已发布的 `@eidos.space/plugin-sdk` 和 `@eidos.space/plugin-tools` 0.5.0，无需 Eidos 源码仓库。
+
+移动端总览采用紧凑统计、整行可点击的最近日志，以及跟随宿主主题的中性色。热力图默认定位近期，刷新时保留滚动位置；统计加载期间也可以打开今日日志。

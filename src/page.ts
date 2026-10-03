@@ -1,4 +1,5 @@
 import type { Mount } from "@eidos.space/plugin-sdk"
+import { openTodayJournal } from "./journal"
 import {
   calendarYearRange,
   dateIndex,
@@ -15,10 +16,12 @@ const copy = {
     title: "Journals",
     subtitle: "A quiet record of your days, kept in your own files.",
     refresh: "Refresh",
+    today: "Today's journal",
+    opening: "Opening…",
     loading: "Looking for journal entries…",
     empty: "Your journal starts with a single day.",
     emptyDetail:
-      "Use “Open today's journal” from the command palette to create your first entry.",
+      "Tap “Today's journal” above to write your first entry.",
     total: "Days written",
     year: (year: number) => `Days in ${year}`,
     current: "Current streak",
@@ -45,9 +48,11 @@ const copy = {
     title: "日志",
     subtitle: "日子写进文件，始终留在自己手中。",
     refresh: "刷新",
+    today: "今日日志",
+    opening: "正在打开…",
     loading: "正在查找日志…",
     empty: "从今天开始记录。",
-    emptyDetail: "在命令面板运行“打开今天的日志”，即可创建第一篇。",
+    emptyDetail: "点击上方「今日日志」，写下第一篇。",
     total: "记录天数",
     year: (year: number) => `${year} 年记录`,
     current: "当前连续",
@@ -109,9 +114,24 @@ const mount: Mount = (ctx, root) => {
   const refresh = element("button", "jn-refresh", t.refresh)
   refresh.type = "button"
   header.append(heading, refresh)
+  const todayButton = element("button", "jn-today")
+  todayButton.type = "button"
+  const todayLabel = element("strong", "jn-today-label", t.today)
+  const todayDate = element("span", "jn-today-date")
+  const updateTodayDate = () => {
+    todayDate.textContent = new Intl.DateTimeFormat(locale, {
+      month: "long", day: "numeric", weekday: "long",
+    }).format(new Date())
+  }
+  updateTodayDate()
+  const todayText = element("span", "jn-today-text")
+  todayText.append(todayLabel, todayDate)
+  const todayIcon = element("span", "jn-today-icon", "+")
+  todayIcon.setAttribute("aria-hidden", "true")
+  todayButton.append(todayIcon, todayText, element("span", "jn-today-arrow", "›"))
   const content = element("div", "jn-content")
   content.append(element("p", "jn-status", t.loading))
-  shell.append(header, content)
+  shell.append(header, todayButton, content)
   root.replaceChildren(shell)
 
   let pending = false
@@ -122,6 +142,27 @@ const mount: Mount = (ctx, root) => {
   let reloadTimer: ReturnType<typeof setTimeout> | null = null
   let selectedYear = new Date().getFullYear()
   let yearSelector: HTMLSelectElement | null = null
+  let chartYear: number | null = null
+  todayButton.addEventListener("click", async () => {
+    if (todayButton.disabled || disposed || ctx.signal.aborted) return
+    todayButton.disabled = true
+    todayLabel.textContent = t.opening
+    try {
+      await openTodayJournal(capabilities, ctx.signal)
+    } catch (error) {
+      if (!ctx.signal.aborted) showError(error)
+    } finally {
+      if (!disposed) {
+        todayButton.disabled = false
+        todayLabel.textContent = t.today
+        updateTodayDate()
+      }
+    }
+  })
+  const onVisible = () => {
+    if (document.visibilityState === "visible") updateTodayDate()
+  }
+  document.addEventListener("visibilitychange", onVisible)
   function scheduleLoad() {
     if (disposed) return
     if (reloadTimer) clearTimeout(reloadTimer)
@@ -217,6 +258,9 @@ const mount: Mount = (ctx, root) => {
       )
       if (disposed || ctx.signal.aborted) return
 
+      const previousScroll = chartYear === displayYear
+        ? content.querySelector<HTMLElement>(".jn-heatmap-scroll")?.scrollLeft
+        : undefined
       content.replaceChildren()
       if (files.length >= 20_000)
         content.append(element("p", "jn-warning", t.truncated))
@@ -263,6 +307,9 @@ const mount: Mount = (ctx, root) => {
       activityHeader.append(activityHeading, nextYearSelector)
       activity.append(activityHeader)
       const scroll = element("div", "jn-heatmap-scroll")
+      scroll.tabIndex = 0
+      scroll.setAttribute("role", "region")
+      scroll.setAttribute("aria-label", t.activity)
       const chart = element("div", "jn-chart")
       const daySet = new Set(selectedDates)
       const months = element("div", "jn-months")
@@ -340,6 +387,13 @@ const mount: Mount = (ctx, root) => {
       )
       activity.append(legend)
       content.append(activity)
+      // Keep recent dates visible on narrow screens, retaining the user's position on refresh.
+      const focusDate = displayYear === today.getFullYear()
+        ? todayKey
+        : selectedDates.at(-1)
+      const focusWeek = focusDate ? Math.floor((dateIndex(focusDate) - first) / 7) : 0
+      scroll.scrollLeft = previousScroll ?? Math.max(0, focusWeek * 16 - scroll.clientWidth / 2)
+      chartYear = displayYear
 
       const recent = element("section", "jn-section")
       recent.append(element("h2", "jn-section-title", t.recent))
@@ -356,7 +410,7 @@ const mount: Mount = (ctx, root) => {
             dateFormat.format(indexDate(dateIndex(date)))
           ),
           element("span", "jn-recent-path", path),
-          element("span", "jn-recent-arrow", "↗")
+          element("span", "jn-recent-arrow", "›")
         )
         item.addEventListener("click", () => {
           void openFile(path).catch(showError)
@@ -395,6 +449,7 @@ const mount: Mount = (ctx, root) => {
   return {
     dispose() {
       disposed = true
+      document.removeEventListener("visibilitychange", onVisible)
       if (reloadTimer) clearTimeout(reloadTimer)
       watchSubscription?.dispose()
       root.replaceChildren()

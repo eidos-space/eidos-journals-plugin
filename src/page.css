@@ -19,6 +19,7 @@
   box-sizing: border-box;
 }
 .jn-header,
+.jn-today,
 .jn-content {
   max-width: 1040px;
   margin: 0 auto;
@@ -28,7 +29,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 38px;
+  margin-bottom: 24px;
 }
 .jn-eyebrow {
   color: var(--eidos-muted, #717b84);
@@ -55,7 +56,31 @@
   padding: 8px 13px;
   font: inherit;
   cursor: pointer;
+  min-height: 44px;
 }
+.jn-today {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  border: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--eidos-foreground, #242427) 5%, var(--eidos-background, #fafafa));
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.jn-today-text { display: flex; flex: 1; flex-direction: column; gap: 3px; }
+.jn-today-label { font-size: 15px; font-weight: 600; }
+.jn-today-date { font-size: 12px; color: var(--eidos-muted, #747479); }
+.jn-today-icon { font-size: 25px; font-weight: 300; }
+.jn-today-arrow { font-size: 24px; color: var(--eidos-muted, #747479); }
+.jn-today:disabled { cursor: wait; opacity: .6; }
+.jn-today:hover:not(:disabled) { background: color-mix(in srgb, var(--eidos-foreground, #242427) 9%, var(--eidos-background, #fafafa)); }
+.jn-today:focus-visible { outline: 2px solid var(--eidos-foreground, #242427); outline-offset: 3px; }
 .jn-refresh:hover:not(:disabled),
 .jn-recent-item:hover {
   background: color-mix(
@@ -285,14 +310,76 @@
   background: color-mix(in srgb, #b42318 8%, var(--eidos-background, #fff));
 }
 @media (max-width: 700px) {
+  .jn-page {
+    padding: 16px 20px 24px;
+    min-width: 0;
+  }
   .jn-header {
-    align-items: flex-start;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .jn-title {
+    font-size: 22px;
+    line-height: 1.3;
+    letter-spacing: -.025em;
+    margin: 0;
+  }
+  .jn-eyebrow,
+  .jn-subtitle {
+    display: none;
+  }
+  .jn-refresh {
+    border: 0;
+    background: transparent;
+    padding: 10px 0 10px 12px;
+    color: var(--eidos-muted, #747479);
+    font-size: 13px;
+  }
+  .jn-today { margin-bottom: 22px; }
+  .jn-metric {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    gap: 7px;
+  }
+  .jn-metric-value { font-size: 24px; font-weight: 600; }
+  .jn-metric-label { font-size: 11px; }
+  .jn-metric:nth-child(even) { border-left: 1px solid var(--eidos-border, #e5e5e7); padding-left: 20px; }
+  .jn-metric:nth-child(n+3) .jn-metric-value { font-size: 18px; }
+  .jn-metric:nth-child(n+3) { flex-direction: row; align-items: baseline; justify-content: flex-start; gap: 8px; }
+  .jn-metric:nth-child(n+3) .jn-metric-label { font-size: 11px; }
+  .jn-section-title { font-size: 14px; font-weight: 600; }
+  .jn-section-detail { font-size: 11px; margin-top: 5px; }
+  .jn-section-header { align-items: center; gap: 8px; margin-bottom: 18px; }
+  .jn-year-select { min-height: 44px; min-width: 76px; border: 0; padding: 6px; font-size: 13px; }
+  .jn-legend { margin-top: 10px; }
+  .jn-day-level-1 { background: color-mix(in srgb, var(--eidos-foreground, #242427) 25%, var(--eidos-background, #fafafa)); }
+  .jn-day-level-2 { background: color-mix(in srgb, var(--eidos-foreground, #242427) 45%, var(--eidos-background, #fafafa)); }
+  .jn-day-level-3 { background: color-mix(in srgb, var(--eidos-foreground, #242427) 65%, var(--eidos-background, #fafafa)); }
+  .jn-day-level-4 { background: var(--eidos-foreground, #242427); }
+  .jn-recent { margin-top: 12px; }
+  .jn-recent-date { font-weight: 400; }
+  .jn-recent-arrow { font-size: 20px; }
+  .jn-empty { font-size: 13px; line-height: 1.8; padding: 14px 0; }
+  .jn-status { padding: 14px 0; }
+  .jn-recent-item {
+    min-height: 52px;
+    padding: 12px 0;
   }
   .jn-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 0;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--eidos-border, #e5e5e7);
+    margin-bottom: 0;
   }
   .jn-section {
-    padding: 18px;
+    border: 0;
+    border-radius: 0;
+    padding: 22px 0 0;
+    margin-bottom: 0;
   }
   .jn-recent-item {
     grid-template-columns: minmax(0, 1fr) 18px;
