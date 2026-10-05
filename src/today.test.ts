@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest"
 import type { CommonCapabilities } from "@eidos.space/plugin-sdk"
 import { openTodayJournal } from "./journal"
+import manifest from "../plugin.json"
+
+it("grants the overview permission to create today's journal", () => {
+  expect(manifest.views.find(view => view.id === "overview")?.access).toBe("write")
+  expect(manifest.workspace.files).toBe(true)
+})
 
 function fixture(existing = false) {
   const fs = {

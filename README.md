@@ -1,8 +1,8 @@
 # Journals
 
-Journals 0.5.2 requires Eidos Lite 0.20.0 or later and plugin API 3.0.0. CLI Serve is not supported.
+Journals 0.5.3 requires Eidos Lite 0.20.0 or later and plugin API 3.0.0. CLI Serve is not supported.
 
-Download `eidos.journals-0.5.2.eidos-plugin` from [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases), then use **Plugins → Install plugin…** in a compatible Lite build and enable Journals in your Space. The release includes a SHA-256 checksum for the package.
+Download `eidos.journals-0.5.3.eidos-plugin` from [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases), then use **Plugins → Install plugin…** in a compatible Lite build and enable Journals in your Space. The release includes a SHA-256 checksum for the package.
 
 Once enabled, **Journals** appears in the host navigation and opens the overview directly. Android builds with plugin Page navigation support show it in the bottom navigation (or **More** when the bar is full). Update the Android app to a build with this support before using that entry. The command-palette actions remain available.
 
@@ -17,3 +17,5 @@ Journals uses local dates and stores files in the current Space. It needs no acc
 To build from source, install dependencies with `pnpm install`, then run `pnpm check`, `pnpm test`, and `pnpm pack:plugin`. The package uses published `@eidos.space/plugin-sdk` and `@eidos.space/plugin-tools` 0.5.0.
 
 On mobile, the overview uses compact statistics, full-width recent-entry rows, and theme-aware neutral colors. The activity chart initially shows recent dates and preserves its scroll position on refresh. The Today shortcut remains available while statistics load.
+
+On mobile, enable Journals again in each Space after updating. The overview declares write access so its Today's journal shortcut can create a missing file; opening an existing journal preserves its contents.

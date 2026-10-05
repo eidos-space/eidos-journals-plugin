@@ -1,8 +1,8 @@
 # Journals
 
-Journals 0.5.2 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0。不支持 CLI Serve。
+Journals 0.5.3 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0。不支持 CLI Serve。
 
-从 [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases) 下载 `eidos.journals-0.5.2.eidos-plugin`，然后在兼容的 Lite 构建中通过“插件 → 安装插件…”安装，并在 Space 中启用。发布附件包含安装包的 SHA-256 校验值。
+从 [GitHub Releases](https://github.com/eidos-space/eidos-journals-plugin/releases) 下载 `eidos.journals-0.5.3.eidos-plugin`，然后在兼容的 Lite 构建中通过“插件 → 安装插件…”安装，并在 Space 中启用。发布附件包含安装包的 SHA-256 校验值。
 
 启用后，宿主导航中的 **Journals** 入口会直接打开总览。在支持插件 Page 导航的 Android 构建中，入口位于底部导航，位置不足时收进“更多”。请先更新到支持此能力的 Android 应用。原有命令入口仍可使用。
 
@@ -17,3 +17,5 @@ Journals 0.5.2 要求 Eidos Lite 0.20.0 或更新版本，支持插件 API 3.0.0
 从源码构建时，先运行 `pnpm install`，再运行 `pnpm check`、`pnpm test` 和 `pnpm pack:plugin`。项目使用已发布的 `@eidos.space/plugin-sdk` 和 `@eidos.space/plugin-tools` 0.5.0，无需 Eidos 源码仓库。
 
 移动端总览采用紧凑统计、整行可点击的最近日志，以及跟随宿主主题的中性色。热力图默认定位近期，刷新时保留滚动位置；统计加载期间也可以打开今日日志。
+
+移动端更新后，请在各个 Space 中重新启用 Journals。总览页声明写入权限，使「今日日志」能够创建尚不存在的文件；打开已有日记会保留原有内容。

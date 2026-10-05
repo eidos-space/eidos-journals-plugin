@@ -2,7 +2,7 @@
   "apiVersion": 1,
   "id": "eidos.journals",
   "name": "Journals",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "requires": {
     "pluginApi": "3.0.0"
   },
@@ -24,7 +24,8 @@
       "id": "overview",
       "title": "Journals",
       "entry": "./src/page.ts",
-      "kind": "page"
+      "kind": "page",
+      "access": "write"
     }
   ],
   "settings": {
