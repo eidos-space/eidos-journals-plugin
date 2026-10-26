@@ -1,10 +1,10 @@
 {
   "apiVersion": 1,
   "id": "eidos.journals",
-  "name": "Journals",
-  "version": "0.5.3",
+  "name": "%plugin.name%",
+  "version": "0.6.0",
   "requires": {
-    "pluginApi": "3.0.0"
+    "pluginApi": "3.7.0"
   },
   "icon": {
     "paths": [
@@ -22,7 +22,7 @@
   "views": [
     {
       "id": "overview",
-      "title": "Journals",
+      "title": "%views.overview.title%",
       "entry": "./src/page.ts",
       "kind": "page",
       "access": "write"
@@ -31,14 +31,14 @@
   "settings": {
     "folder": {
       "type": "string",
-      "title": "Journals folder",
-      "description": "Space-relative folder. Leave empty to save at the Space root.",
+      "title": "%settings.folder.title%",
+      "description": "%settings.folder.description%",
       "default": "journals"
     },
     "organization": {
       "type": "string",
-      "title": "File organization",
-      "description": "The path shown is relative to the Journals folder.",
+      "title": "%settings.organization.title%",
+      "description": "%settings.organization.description%",
       "enum": [
         "YYYY-MM-DD.md",
         "YYYY/YYYY-MM-DD.md",
@@ -50,13 +50,13 @@
   "actions": [
     {
       "id": "today",
-      "title": "Open today's journal",
+      "title": "%actions.today.title%",
       "context": "workspace",
       "access": "write"
     },
     {
       "id": "overview",
-      "title": "Open Journals overview",
+      "title": "%actions.overview.title%",
       "context": "workspace"
     }
   ],
@@ -73,5 +73,17 @@
       "location": "command-palette",
       "action": "overview"
     }
-  ]
+  ],
+  "description": "%plugin.description%",
+  "i18n": {
+    "defaultLocale": "en",
+    "messages": {
+      "en": "./locales/en.json",
+      "zh-CN": "./locales/zh-CN.json"
+    },
+    "readme": {
+      "en": "./README.md",
+      "zh-CN": "./README.zh-CN.md"
+    }
+  }
 }
