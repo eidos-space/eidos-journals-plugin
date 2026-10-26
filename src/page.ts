@@ -1,5 +1,6 @@
 import type { Mount } from "@eidos.space/plugin-sdk"
 import { openTodayJournal } from "./journal"
+import { localizeError } from "./errors"
 import {
   calendarYearRange,
   dateIndex,
@@ -10,69 +11,6 @@ import {
 } from "./stats"
 import "./page.css"
 
-const copy = {
-  en: {
-    eyebrow: "YOUR WRITING",
-    title: "Journals",
-    subtitle: "A quiet record of your days, kept in your own files.",
-    refresh: "Refresh",
-    today: "Today's journal",
-    opening: "Opening…",
-    loading: "Looking for journal entries…",
-    empty: "Your journal starts with a single day.",
-    emptyDetail:
-      "Tap “Today's journal” above to write your first entry.",
-    total: "Days written",
-    year: (year: number) => `Days in ${year}`,
-    current: "Current streak",
-    longest: "Longest streak",
-    activity: "Writing activity",
-    selectYear: "Select year",
-    activityDetail:
-      "Darker squares mean more non-empty lines written that day.",
-    recent: "Recent entries",
-    less: "Less",
-    more: "More",
-    noEntry: "No entry",
-    line: "non-empty line",
-    lines: "non-empty lines",
-    unknownLines: "Line count unavailable",
-    days: "days",
-    truncated:
-      "The journal folder has more files than the page can count. Statistics may be incomplete.",
-    retry: "Try again",
-    noRecent: "No journal entries yet",
-  },
-  zh: {
-    eyebrow: "写作记录",
-    title: "日志",
-    subtitle: "日子写进文件，始终留在自己手中。",
-    refresh: "刷新",
-    today: "今日日志",
-    opening: "正在打开…",
-    loading: "正在查找日志…",
-    empty: "从今天开始记录。",
-    emptyDetail: "点击上方「今日日志」，写下第一篇。",
-    total: "记录天数",
-    year: (year: number) => `${year} 年记录`,
-    current: "当前连续",
-    longest: "最长连续",
-    activity: "记录热力图",
-    selectYear: "选择年份",
-    activityDetail: "颜色越深，表示当天日志的非空行越多。",
-    recent: "最近日志",
-    less: "少",
-    more: "多",
-    noEntry: "未记录",
-    line: "非空行",
-    lines: "非空行",
-    unknownLines: "无法统计行数",
-    days: "天",
-    truncated: "日志文件过多，统计可能不完整。",
-    retry: "重试",
-    noRecent: "还没有日志",
-  },
-} as const
 
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -93,12 +31,38 @@ const mount: Mount = (ctx, root) => {
   const openFile = capabilities.ui.openFile
 
   if (ctx.binding.kind !== "page") throw new Error("Open the Journals page")
-  const language = navigator.language.toLowerCase().startsWith("zh")
-    ? "zh"
-    : "en"
-  const t = copy[language]
-  const locale = language === "zh" ? "zh-CN" : "en-US"
-  const dateFormat = new Intl.DateTimeFormat(locale, {
+  const labels = () => ({
+    eyebrow: ctx.i18n.t("ui.eyebrow"),
+    title: ctx.i18n.t("ui.title"),
+    subtitle: ctx.i18n.t("ui.subtitle"),
+    refresh: ctx.i18n.t("ui.refresh"),
+    today: ctx.i18n.t("ui.today"),
+    opening: ctx.i18n.t("ui.opening"),
+    loading: ctx.i18n.t("ui.loading"),
+    empty: ctx.i18n.t("ui.empty"),
+    emptyDetail: ctx.i18n.t("ui.emptyDetail"),
+    total: ctx.i18n.t("ui.total"),
+    year: (year: number) => ctx.i18n.t("ui.year", { year }),
+    current: ctx.i18n.t("ui.current"),
+    longest: ctx.i18n.t("ui.longest"),
+    activity: ctx.i18n.t("ui.activity"),
+    selectYear: ctx.i18n.t("ui.selectYear"),
+    activityDetail: ctx.i18n.t("ui.activityDetail"),
+    recent: ctx.i18n.t("ui.recent"),
+    less: ctx.i18n.t("ui.less"),
+    more: ctx.i18n.t("ui.more"),
+    noEntry: ctx.i18n.t("ui.noEntry"),
+    line: ctx.i18n.t("ui.line"),
+    lines: ctx.i18n.t("ui.lines"),
+    unknownLines: ctx.i18n.t("ui.unknownLines"),
+    days: ctx.i18n.t("ui.days"),
+    truncated: ctx.i18n.t("ui.truncated"),
+    retry: ctx.i18n.t("ui.retry"),
+    noRecent: ctx.i18n.t("ui.noRecent"),
+  })
+  let t = labels()
+  let locale = ctx.i18n.locale
+  let dateFormat = new Intl.DateTimeFormat(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -436,7 +400,7 @@ const mount: Mount = (ctx, root) => {
 
   function showError(error: unknown) {
     if (disposed) return
-    const message = error instanceof Error ? error.message : String(error)
+    const message = localizeError(error, ctx.i18n)
     const alert = element("p", "jn-error", message)
     alert.setAttribute("role", "alert")
     content.prepend(alert)
@@ -445,6 +409,19 @@ const mount: Mount = (ctx, root) => {
   refresh.addEventListener("click", () => {
     void load()
   })
+  ctx.subscriptions.add(ctx.i18n.onDidChangeLocale(() => {
+    if (disposed) return
+    t = labels()
+    locale = ctx.i18n.locale
+    dateFormat = new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric" })
+    heading.children[0]!.textContent = t.eyebrow
+    heading.children[1]!.textContent = t.title
+    heading.children[2]!.textContent = t.subtitle
+    refresh.textContent = t.refresh
+    todayLabel.textContent = todayButton.disabled ? t.opening : t.today
+    updateTodayDate()
+    scheduleLoad()
+  }))
   void load()
   return {
     dispose() {
